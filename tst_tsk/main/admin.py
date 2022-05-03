@@ -1,10 +1,12 @@
-import imp
 from django.contrib import admin
-from pkg_resources import empty_provider
-from .models import Employee, Position, Boss
+from .models import Employee, Position
+from .forms import EmployeeForm
 
 
-# Register your models here.
-admin.site.register(Employee)
+class EmployeeAdmin(admin.ModelAdmin):
+    form = EmployeeForm
+
+
+admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Position)
-admin.site.register(Boss)
+# admin.site.register(Boss,BossAdmin)
