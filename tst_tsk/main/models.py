@@ -41,14 +41,20 @@ class Position(models.Model):
 
 
 class Employee(models.Model):
-    emp_id = models.BigAutoField(primary_key=True)
-    first_name = models.CharField(max_length=255)
-    middle_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    position = models.ForeignKey(Position,on_delete=CASCADE)
-    salary = models.IntegerField(null = False)
-    hire_date = models.DateField(null= False) 
-    boss = models.ForeignKey("self", blank = True, null= True, on_delete=CASCADE)
+    emp_id = models.BigAutoField( primary_key=True)
+    first_name = models.CharField( max_length=30)
+    middle_name = models.CharField( max_length=30)
+    last_name = models.CharField( max_length=30)
+    position = models.ForeignKey( Position,
+                                    on_delete=CASCADE)
+    salary = models.IntegerField( null = False)
+    hire_date = models.DateField( auto_now_add=True,
+                                    blank=True,
+                                    null= False) 
+    boss = models.ForeignKey("self", 
+                                    blank = True,
+                                    null= True,
+                                    on_delete=CASCADE)
             
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
