@@ -5,6 +5,7 @@ from main.models import Employee,Position
 
 MODE_REFRESH='refresh'
 MODE_CLEAR='clear'
+MODE_START='start'
 
 class Command(BaseCommand):
     help = "seed database for testing and development."
@@ -17,10 +18,12 @@ class Command(BaseCommand):
         run_seed(self, options['mode'])
         self.stdout.write('done.')
 
+
 def clear_data():
     """Deletes all the table data"""
-    # logger.info("Delete Address instances")
+    Position.objects.all().delete()
     Employee.objects.all().delete()
+
 def create_boss():
     boss = Employee(first_name = 'Boss',
                     middle_name = 'Boss',
@@ -30,16 +33,20 @@ def create_boss():
                     )
     boss.save()
 
-first_names = ['sergei','misha','grisha','dasha','natasha']
-middle_names = ['olegovna','sergeevna','aleksandrovich','pavelovich',]
-last_names = ['mishelov','borgun','nurhonov','komarov','sergeev']
-salaries = [x for x in range(50000,120000,5000)]
-
+def create_positions(max_position_level:int):
+    for i in range(1,max_position_level+1):
+        position = Position( pos_name = 'Level '+str(i),
+                            level = i)
+        position.save()
 
 def create_employee(given_pos_level:int):
     """Creates an address object combining different elements from the list"""
     # logger.info("Creating address")
-    
+    first_names = ['sergei','misha','grisha','dasha','natasha']
+    middle_names = ['olegovna','sergeevna','aleksandrovich','pavelovich',]
+    last_names = ['mishelov','borgun','nurhonov','komarov','sergeev']
+    salaries = [x for x in range(50000,120000,5000)]
+    bosses = [x for x in Employee.objects.filter(position__level=given_pos_level+1)]
 
     employee = Employee(
         first_name=random.choice(first_names),
@@ -49,28 +56,27 @@ def create_employee(given_pos_level:int):
         salary=random.choice(salaries),
         boss = random.choice(bosses)
     )
-
+    employee.save()
     # logger.info("{} address created.".format(address))
-    return employee
 
 def run_seed(self, mode):
     """ Seed database based on mode
     
-    :param mode: refresh / clear 
+    :param mode: start/refresh / clear 
     :return:
     """
-    # Clear data from tables
-    clear_data()
-    
-    starttime = datetime.datetime.now()
     if mode == MODE_CLEAR:
+        clear_data()
+        return
+    elif mode == MODE_START:
+        create_positions(5)
+        create_boss()
         return
 
-    create_boss()
-    global bosses
-    bosses = [x for x in Employee.objects.filter(position__level = 5)]
-    # Creating 15 addresses
-    for i in range(12500):
+    
+
+    starttime = datetime.datetime.now()
+    for i in range(15):
         for y in range(4,0,-1):
             create_employee(y)
     endtime = datetime.datetime.now()

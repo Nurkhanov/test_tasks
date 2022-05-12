@@ -7,9 +7,21 @@
 
 </head>
 <body>
-	{% for i in employee %}
-	<h1>{{i}}</h1>
-	<h1>{{i.position}}</h1>
-	{% endfor %}
+	<q>Hello this is representaion of Employees</q>
+	
+	<table>
+		<tr>
+			<th>Level</th>
+			<th>Name</th>
+		</tr>
+		{% for i in employee %}
+		<tr>
+			<td>{{ i.position }}</td>
+			<td>{{ i }}</td>
+			
+		</tr>
+		{% endfor %}
+	</table>
+	
 </body>
 </html>
